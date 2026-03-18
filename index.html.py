@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Sticker Race</title>
+    <meta charset="utf-8">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -11,23 +12,25 @@
             color: white;
             padding: 20px;
         }
+        h1 { font-size: 28px; }
         .emoji { font-size: 100px; margin: 30px; }
+        .stickers { display: flex; justify-content: center; gap: 20px; }
         .sticker {
             width: 100px;
             height: 100px;
             cursor: pointer;
             border: 3px solid white;
             border-radius: 10px;
-            margin: 10px;
         }
-        .sticker:hover { border-color: gold; transform: scale(1.1); }
+        .sticker:hover { border-color: gold; }
+        .message { font-size: 24px; margin: 20px; }
         button {
             background: gold;
             color: black;
-            padding: 15px 30px;
             border: none;
-            border-radius: 25px;
+            padding: 15px 30px;
             font-size: 18px;
+            border-radius: 25px;
             cursor: pointer;
             margin-top: 20px;
         }
@@ -36,9 +39,9 @@
 <body>
     <h1>Кто быстрее подберет стикер?</h1>
     <div class="emoji" id="emoji">😊</div>
-    <div id="stickers"></div>
-    <div id="message"></div>
-    <button onclick="newRound()">Следующий раунд</button>
+    <div class="stickers" id="stickers"></div>
+    <div class="message" id="message"></div>
+    <button onclick="window.newRound()">Следующий раунд</button>
 
     <script>
         let tg = Telegram.WebApp;
@@ -51,28 +54,29 @@
 
         let currentCorrect = stickers['😊'];
 
-        function newRound() {
-            document.getElementById('emoji').textContent = '😊';
-            currentCorrect = stickers['😊'];
-            showStickers();
-        }
-
         function showStickers() {
-            let html = '';
-            html += '<img src="' + stickers['😊'] + '" class="sticker" onclick="check(true)">';
-            html += '<img src="' + stickers['😂'] + '" class="sticker" onclick="check(false)">';
-            document.getElementById('stickers').innerHTML = html;
+            document.getElementById('stickers').innerHTML = 
+                '<img src="' + stickers['😊'] + '" class="sticker" onclick="check(true)">' +
+                '<img src="' + stickers['😂'] + '" class="sticker" onclick="check(false)">';
         }
 
-        function check(isCorrect) {
+        window.check = function(isCorrect) {
             if (isCorrect) {
                 document.getElementById('message').innerHTML = '✅ Правильно!';
             } else {
                 document.getElementById('message').innerHTML = '❌ Неправильно!';
             }
-        }
+        };
 
-        newRound();
+        window.newRound = function() {
+            document.getElementById('emoji').textContent = '😊';
+            currentCorrect = stickers['😊'];
+            document.getElementById('message').innerHTML = '';
+            showStickers();
+        };
+
+        // Запуск
+        window.newRound();
     </script>
 </body>
 </html>
